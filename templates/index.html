@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News Summarization & Detection</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background-color: #2d3748;
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .chat-container {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .message {
+      max-width: 70%;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .user-message {
+      background-color: #3182ce;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bot-message {
+      background-color: #edf2f7;
+      color: #1a202c;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .input-container {
+      display: flex;
+      padding: 0.8rem;
+      border-top: 1px solid #e2e8f0;
+      background-color: white;
+    }
+
+    .input-container input {
+      flex: 1;
+      padding: 0.8rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .input-container button {
+      margin-left: 0.5rem;
+      background-color: #3182ce;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.2rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .input-container button:hover {
+      background-color: #2b6cb0;
+    }
+
+    .loading {
+      font-size: 0.9rem;
+      color: #718096;
+    }
+  </style>
+</head>
+<body>
+  <header>📰 News Summarization & Fake News Detection</header>
+
+  <div class="chat-container" id="chat-container">
+    <!-- Messages will appear here -->
+  </div>
+
+  <div class="input-container">
+    <input type="text" id="queryInput" placeholder="Ask about news (e.g., AI, Elections, Climate Change)..." />
+    <button onclick="sendQuery()">Send</button>
+  </div>
+
+  <script>
+    async function sendQuery() {
+      const input = document.getElementById("queryInput");
+      const chatContainer = document.getElementById("chat-container");
+      const query = input.value.trim();
+
+      if (!query) return;
+
+      // Display user message
+      const userMsg = document.createElement("div");
+      userMsg.classList.add("message", "user-message");
+      userMsg.textContent = query;
+      chatContainer.appendChild(userMsg);
+
+      // Show loading
+      const loadingMsg = document.createElement("div");
+      loadingMsg.classList.add("message", "bot-message", "loading");
+      loadingMsg.textContent = "Analyzing news, please wait...";
+      chatContainer.appendChild(loadingMsg);
+
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      try {
+        const response = await fetch("http://127.0.0.1:8000/ask", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ query }),
+        });
+
+        const data = await response.json();
+
+        // Remove loading
+        chatContainer.removeChild(loadingMsg);
+
+        // Display bot message
+        const botMsg = document.createElement("div");
+        botMsg.classList.add("message", "bot-message");
+
+        botMsg.innerHTML = `
+          <strong>Summary:</strong> ${data.summary}<br><br>
+          <strong>Fake News Detection:</strong><br>
+          ${JSON.stringify(data.fake_news_detection, null, 2)}
+        `;
+        chatContainer.appendChild(botMsg);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      } catch (error) {
+        console.error(error);
+        chatContainer.removeChild(loadingMsg);
+
+        const errMsg = document.createElement("div");
+        errMsg.classList.add("message", "bot-message");
+        errMsg.textContent = "❌ Error fetching response from API.";
+        chatContainer.appendChild(errMsg);
+      }
+
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
