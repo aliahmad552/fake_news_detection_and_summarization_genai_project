@@ -1,3 +1,4 @@
+![Fake News Detection & Summarization](./static/images/banner.png)
 # 📰 Fake News Detection & News Summarization App
 
 An **AI-powered web application** that summarizes the latest news articles and detects potential fake or misleading information using **Generative AI**, **LangChain**, and **HuggingFace** models.  
@@ -16,7 +17,7 @@ This project aims to help users **save time**, **stay informed**, and **verify t
 - 💬 **FastAPI Backend:** Provides a clean, fast, and scalable API for serving predictions and summaries.  
 
 ---
-
+![Fake News Detection & Summarization](./static/images/form.png)
 ## 🧠 Tech Stack
 
 | Component | Technology Used |
@@ -64,3 +65,32 @@ uvicorn app:app --reload
 
 ```
 ---
+## 📊 Example Output
+
+Input Query: AI in Healthcare
+Output:
+
+📰 Summarized News: AI is transforming healthcare through faster diagnosis and efficient data-driven treatment plans...
+
+🧾 Fake News Probability: Low (92% Reliable)
+
+## 🌍 Future Enhancements
+
+💬 Add Chat-style Frontend UI
+
+📈 Real-time Credibility Dashboard
+
+🌐 Integration with live news APIs
+
+🧠 Fine-tune models for domain-specific detection
+---
+## 💡 Why This Project?
+
+In a world flooded with information, separating truth from noise has become essential.
+This project uses AI for good — helping people consume news intelligently, quickly, and responsibly.
+--
+## 👨‍💻 Author
+
+Ali Ahmad
+
+Data Scientist | AI Engineer | Generative AI Enthusiast
